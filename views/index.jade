@@ -1,5 +1,10 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+extends ../node_modules/jade-bootstrap/_bootstrap
+head
+  title=title
+block body
+  +navbar("SWEN303", "dropdown_menu")
+    +nav_item("/", "active") Home
+    +nav_item("/users") Users
+  .container
+    h1 #{title}
+    p Welcome to #{title}. A collection of documents!
