@@ -4,7 +4,16 @@ var router = express.Router();
 var cheerio = require('cheerio');
 var basex = require('basex');
 var client = new basex.Session("127.0.0.1", 1984, "admin", "admin");
-client.execute("open movies");
+
+client.execute("OPEN Colenso");
+
+client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
+    "//name[@type = 'place' and position() = 1 and . = 'Manawarakau']",
+    function(err,res) {
+      if(!err) console.log(res.result);
+    }
+);
+
 //client.execute("xquery //movie[position() lt 10]",console.log);
 router.get("/",function(req,res,next){
   client.execute("xquery for $movie in //movie[position() lt 10] " +
