@@ -8,6 +8,7 @@ block body
   .container
     h1 #{title}
     p Welcome to #{title}. A collection of documents!
-    form.form-group(action="/submit", method="post")
-      input.input-block-level(type="text", name="query", placeholder="Query")
+    form.form-group(action="/search", method="get")
+      input.input-block-level(type="text", name="query1", placeholder="Query1")
+      input.input-block-level(type="text", name="query2", placeholder="Query2")
       button.btn.btn-large(type="submit") Submit
