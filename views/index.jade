@@ -8,7 +8,6 @@ block body
   .container
     h1 #{title}
     p Welcome to #{title}. A collection of documents!
-    +input("text","txtName","Type something here","Search box")
-    +checkbox("Check Box")
-    +radio("Radio Button")
-    +submit("Submit")
+    form.form-group(action="/submit", method="post")
+      input.input-block-level(type="text", name="query", placeholder="Query")
+      button.btn.btn-large(type="submit") Submit
