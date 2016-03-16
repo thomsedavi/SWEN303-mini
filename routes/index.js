@@ -19,7 +19,7 @@ router.get("/",function(req,res,next){
         var $ = cheerio.load(bbb.result);
         $('letter').each(
             function(i, elem) {
-              console.log('meh');
+              console.log('success');
             }
         );
         res.render('index', {title: 'ECS Video Rental'});
