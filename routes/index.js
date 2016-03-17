@@ -26,4 +26,21 @@ router.get("/",function(req,res,next){
       });
 });
 
+router.get('/search', function(req, res, next) {
+    console.log('params are ' + req.query.query1);
+    var queries = req.query;
+    client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
+        "for $letter in //name[@type = 'place' and position() = 1 and . = '" + queries.query2 + "'] " +
+        "return <letter> {$letter} </letter>",
+        function(aaa, bbb) {
+            var $ = cheerio.load(bbb.result);
+            $('letter').each(
+                function(i, elem) {
+                    console.log('success');
+                }
+            );
+            res.render('index', {title: queries.query2});
+        });
+});
+
 module.exports = router;
