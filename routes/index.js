@@ -11,35 +11,28 @@ client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/n
     "//name[@type = 'place' and position() = 1 and . = 'Manawarakau']",
     function(err,res) { if(!err) console.log(res.result)} );
 
-router.get("/",function(req,res,next){
-  client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-      "for $letter in //name[@type = 'place' and position() = 1 and . = 'Manawarakau'] " +
-      "return <letter> {$letter} </letter>",
-      function(aaa, bbb) {
-        var $ = cheerio.load(bbb.result);
-        $('letter').each(
-            function(i, elem) {
-              console.log('success');
-            }
-        );
-        res.render('index', {title: 'ECS Video Rental'});
-      });
+router.get("/",function(req,res){
+    res.render('index', {title: 'ECS Video Rental'});
 });
 
-router.get('/search', function(req, res, next) {
-    console.log('params are ' + req.query.query1);
+router.get('/search', function(req, res) {
     var queries = req.query;
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "for $letter in //name[@type = 'place' and position() = 1 and . = '" + queries.query2 + "'] " +
+        "for $letter in //name[@type = 'place' and position() = 1 and . = '" + queries.query + "'] " +
         "return <letter> {$letter} </letter>",
-        function(aaa, bbb) {
-            var $ = cheerio.load(bbb.result);
-            $('letter').each(
-                function(i, elem) {
-                    console.log('success');
-                }
-            );
-            res.render('index', {title: queries.query2});
+        function(error, result) {
+            if(error){ console.error(error);}
+            else {
+                var $ = cheerio.load(result.result);
+                $('letter').each(
+                    function (i, elem) {
+                        console.log('success');
+                        console.log(result.result);
+                        console.log(elem);
+                    }
+                );
+                res.render('search', {title: queries.query, letter: result.result});
+            }
         });
 });
 

@@ -4,11 +4,9 @@ head
 block body
   +navbar("SWEN303", "dropdown_menu")
     +nav_item("/", "active") Home
-    +nav_item("/users") Users
   .container
     h1 #{title}
     p Welcome to #{title}. A collection of documents!
     form.form-group(action="/search", method="get")
-      input.input-block-level(type="text", name="query1", placeholder="Query1")
-      input.input-block-level(type="text", name="query2", placeholder="Query2")
+      input.input-block-level(type="text", name="query", placeholder="Query")
       button.btn.btn-large(type="submit") Submit
