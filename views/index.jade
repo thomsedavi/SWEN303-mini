@@ -7,6 +7,11 @@ block body
   .container
     h1 #{title}
     p Welcome to #{title}. A collection of documents!
-    form.form-group(action="/search", method="get")
+    form.form-group(action="/search1", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
       button.btn.btn-large(type="submit") Submit
+    form.form-group(action="/search2", method="get")
+      input.input-block-level(type="text", name="query", placeholder="Query")
+      button.btn.btn-large(type="submit") Submit
+    form.form-group(action="/search2", method="get")
+      button.btn.btn-large(type="submit", name="query", value="Colenso/private_letters/PrL-0024.xml") Colenso/private_letters/PrL-0024.xml

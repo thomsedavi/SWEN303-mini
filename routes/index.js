@@ -12,14 +12,13 @@ client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/n
     function(err,res) { if(!err) console.log(res.result)} );
 
 router.get("/",function(req,res){
-    res.render('index', {title: 'ECS Video Rental'});
+    res.render('index', {title: 'Some Letters?'});
 });
 
-router.get('/search', function(req, res) {
+router.get('/search1', function(req, res) {
     var queries = req.query;
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "for $letter in //name[@type = 'place' and position() = 1 and . = '" + queries.query + "'] " +
-        "return <letter> {$letter} </letter>",
+        "(//name[@type='place'])[1] ",
         function(error, result) {
             if(error){ console.error(error);}
             else {
@@ -33,7 +32,22 @@ router.get('/search', function(req, res) {
                 );
                 res.render('search', {title: queries.query, letter: result.result});
             }
-        });
+        }
+    );
+});
+
+//return a file based on address, eg 'Colenso/private_letters/PrL-0024.xml'
+router.get('/search2', function(req, res) {
+    var queries = req.query;
+    client.execute("XQUERY doc('" + queries.query + "')",
+        function(error, result) {
+            if(error){ console.error(error);}
+            else {
+                console.log(result.result);
+                res.render('search', {title: queries.query, letter: result.result});
+            }
+        }
+    );
 });
 
 module.exports = router;
