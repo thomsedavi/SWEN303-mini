@@ -25,8 +25,17 @@ router.get('/search1', function(req, res) {
                 console.error(error);
             } else {
                 var $ = cheerio.load(result.result);
-                console.log($('TEI'));
-                res.render('search', {title: queries.query, letter: result.result});
+                var files = [];
+                $('TEI').each(function(index, element){
+                    var elem = cheerio(element);
+                    files.push({
+                        title: elem.find('title').first().text(),
+                        author: elem.find('author').first().text(),
+                        date: elem.find('date').first().text(),
+                        id: elem.attr('xml:id')
+                    })
+                });
+                res.render('search', {title: queries.query, letter: files});
             }
         }
     );
