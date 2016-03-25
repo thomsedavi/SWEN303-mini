@@ -15,21 +15,17 @@ router.get("/",function(req,res){
     res.render('index', {title: 'Some Letters?'});
 });
 
+//search for a string ay
 router.get('/search1', function(req, res) {
     var queries = req.query;
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "(//name[@type='place'])[1] ",
+        "//TEI[. contains text '" + queries.query + "']",
         function(error, result) {
-            if(error){ console.error(error);}
-            else {
+            if(error){
+                console.error(error);
+            } else {
                 var $ = cheerio.load(result.result);
-                $('letter').each(
-                    function (i, elem) {
-                        console.log('success');
-                        console.log(result.result);
-                        console.log(elem);
-                    }
-                );
+                console.log($('TEI'));
                 res.render('search', {title: queries.query, letter: result.result});
             }
         }
