@@ -7,16 +7,27 @@ block body
 
   .container
     h1 #{title}
-    p Search to #{title}. A collection of documents!
     form.form-group(action="/search1", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
-      button.btn.btn-large(type="submit") Submit
+      button.btn.btn-large(type="submit", name="place", value="1") Submit
     form.form-group(action="/search2", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
       button.btn.btn-large(type="submit") Submit
 
   .container
+    p Searched for '#{search}'.
     if search_result.length > 0
+      if total > 1
+        p #{total} results found
+      else
+        p #{total} result found
+      if total > 10
+        p showing #{first} to #{last}
+      if first > 1
+        a(href='/search1?query=' + search + '&place=' + prev) previous <
+        span -
+      if last < total
+        a(href='/search1?query=' + search + '&place=' + next) > next
       ul
         each file in search_result
           li

@@ -26,16 +26,23 @@ router.get('/search1', function(req, res) {
             } else {
                 var $ = cheerio.load(result.result);
                 var search_result = [];
+                var place = parseInt(queries.place);
                 $('TEI').each(function(index, element){
-                    var elem = cheerio(element);
-                    search_result.push({
-                        title: elem.find('title').first().text(),
-                        author: elem.find('author').first().text(),
-                        date: elem.find('date').first().text(),
-                        id: elem.attr('xml:id')
-                    })
+                    if(index >= place - 1 && index < place + 9) {
+                        var elem = cheerio(element);
+                        search_result.push({
+                            title: elem.find('title').first().text(),
+                            author: elem.find('author').first().text(),
+                            date: elem.find('date').first().text(),
+                            id: elem.attr('xml:id')
+                        })
+                    }
                 });
-                res.render('search', {title: queries.query, search_result: search_result});
+                var last = place + 9 < $('TEI').length ? place + 9 : $('TEI').length;
+                console.log(last);
+                res.render('search', {title: 'search', search: queries.query, search_result: search_result,
+                    first: place, prev: place - 10,
+                    last: last, next: place + 10, total: $('TEI').length});
             }
         }
     );
