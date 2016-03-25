@@ -20,7 +20,7 @@ block body
       ul
         each file in search_result
           li
-            p #{file.title}
+            a(href='view/'+file.id)  #{file.title}
             p #{file.author}, #{file.date}
     else
       p no results sorry!

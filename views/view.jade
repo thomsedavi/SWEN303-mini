@@ -1,0 +1,19 @@
+extends ../node_modules/jade-bootstrap/_bootstrap
+head
+    title=title
+block body
+    +navbar("SWEN303", "dropdown_menu")
+        +nav_item("/", "active") Home
+
+    .container
+        h1 #{title}
+        p Search to #{title}. A collection of documents!
+        form.form-group(action="/search1", method="get")
+            input.input-block-level(type="text", name="query", placeholder="Query")
+            button.btn.btn-large(type="submit") Submit
+        form.form-group(action="/search2", method="get")
+            input.input-block-level(type="text", name="query", placeholder="Query")
+            button.btn.btn-large(type="submit") Submit
+
+    .container
+        !{search_result}
