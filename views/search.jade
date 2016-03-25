@@ -4,6 +4,7 @@ head
 block body
   +navbar("SWEN303", "dropdown_menu")
     +nav_item("/", "active") Home
+
   .container
     h1 #{title}
     p Search to #{title}. A collection of documents!
@@ -13,4 +14,13 @@ block body
     form.form-group(action="/search2", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
       button.btn.btn-large(type="submit") Submit
-    p !{letter}
+
+  .container
+    if search_result.length > 0
+      ul
+        each file in search_result
+          li
+            p #{file.title}
+            p #{file.author}, #{file.date}
+    else
+      p no results sorry!
