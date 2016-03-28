@@ -18,6 +18,14 @@ router.get("/",function(req,res){
 //search for a string ay
 router.get('/search1', function(req, res) {
     var queries = req.query;
+    var result_paths;
+
+    client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
+        "for $p in //TEI[. contains text '" + queries.query + "'] return db:path($p)",
+        function(error, result) {
+            result_paths = result.result.split('\n');
+        });
+
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
         "//TEI[. contains text '" + queries.query + "']",
         function(error, result) {
@@ -26,6 +34,7 @@ router.get('/search1', function(req, res) {
             } else {
                 var $ = cheerio.load(result.result);
                 var search_result = [];
+                //place is the position to find the next ten to be returned
                 var place = parseInt(queries.place);
                 $('TEI').each(function(index, element){
                     if(index >= place - 1 && index < place + 9) {
@@ -34,8 +43,8 @@ router.get('/search1', function(req, res) {
                             title: elem.find('title').first().text(),
                             author: elem.find('author').first().text(),
                             date: elem.find('date').first().text(),
-                            id: elem.attr('xml:id')
-                        })
+                            path: result_paths[index]
+                        });
                     }
                 });
                 var last = place + 9 < $('TEI').length ? place + 9 : $('TEI').length;
@@ -48,37 +57,46 @@ router.get('/search1', function(req, res) {
 });
 
 //return a file based on address, eg 'Colenso/private_letters/PrL-0024.xml'
-router.get('/view/:id', function(req, res) {
-    var params = req.params;
-    client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "//TEI[@xml:id='" + params.id + "']",
+router.get('/view', function(req, res) {
+    var queries = req.query;
+    client.execute("XQUERY doc ('Colenso/" + queries.path + "')",
         function(error, result) {
             if(error){
                 console.error(error);
             } else {
-                res.render('view', {title: 'found a thing', search_result: result.result, id: params.id});
+                res.render('view', {title: 'found a thing', search_result: result.result, path: queries.path});
             }
         }
     )
 });
 
-router.get('/edit/:id', function(req,res) {
-    var params = req.params;
-    client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "//TEI[@xml:id='" + params.id + "']",
+router.get('/edit', function(req,res) {
+    var queries = req.query;
+    client.execute("XQUERY doc ('Colenso/" + queries.path + "')",
         function(error, result) {
             if(error) {
                 console.error(error);
             } else {
-                res.render('edit', {title: 'found a thing', search_result: result.result});
+                res.render('edit', {title: 'found a thing', search_result: result.result, path: queries.path});
             }
         }
     )
 });
 
 router.post("/submit",function(req,res){
+    var params = req.params;
+    var queries = req.query;
+    console.log('Colenso/' + queries.path);
     console.log(req.body.text);
-    res.render('index', {title: 'Some Letters?'});
+    client.replace('Colenso/' + queries.path, req.body.text,
+        function(error, result) {
+            if(error) {
+                console.error(error);
+            } else {
+                res.render('edit', {title: 'changes saved', search_result: req.body.text, path: queries.path});
+            }
+        }
+    )
 });
 
 

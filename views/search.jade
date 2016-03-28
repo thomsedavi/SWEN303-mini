@@ -31,8 +31,8 @@ block body
       ul
         each file in search_result
           li
-            a(href='view/'+file.id)  #{file.title}
+            a(href='view?path='+file.path)  #{file.title}
             p #{file.author}, #{file.date}
-            a(href='edit/'+file.id) edit
+            a(href='edit?path='+file.path) edit
     else
       p no results sorry!
