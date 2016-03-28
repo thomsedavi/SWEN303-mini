@@ -56,7 +56,7 @@ router.get('/view/:id', function(req, res) {
             if(error){
                 console.error(error);
             } else {
-                res.render('view', {title: 'found a thing', search_result: result.result});
+                res.render('view', {title: 'found a thing', search_result: result.result, id: params.id});
             }
         }
     )
