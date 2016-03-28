@@ -39,13 +39,12 @@ router.get('/search1', function(req, res) {
                     }
                 });
                 var last = place + 9 < $('TEI').length ? place + 9 : $('TEI').length;
-                console.log(last);
                 res.render('search', {title: 'search', search: queries.query, search_result: search_result,
                     first: place, prev: place - 10,
                     last: last, next: place + 10, total: $('TEI').length});
             }
         }
-    );
+    )
 });
 
 //return a file based on address, eg 'Colenso/private_letters/PrL-0024.xml'
@@ -60,7 +59,27 @@ router.get('/view/:id', function(req, res) {
                 res.render('view', {title: 'found a thing', search_result: result.result});
             }
         }
-    );
+    )
 });
+
+router.get('/edit/:id', function(req,res) {
+    var params = req.params;
+    client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
+        "//TEI[@xml:id='" + params.id + "']",
+        function(error, result) {
+            if(error) {
+                console.error(error);
+            } else {
+                res.render('edit', {title: 'found a thing', search_result: result.result});
+            }
+        }
+    )
+});
+
+router.post("/submit",function(req,res){
+    console.log(req.body.text);
+    res.render('index', {title: 'Some Letters?'});
+});
+
 
 module.exports = router;

@@ -33,5 +33,6 @@ block body
           li
             a(href='view/'+file.id)  #{file.title}
             p #{file.author}, #{file.date}
+            a(href='edit/'+file.id) edit
     else
       p no results sorry!
