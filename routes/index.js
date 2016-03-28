@@ -88,7 +88,7 @@ router.post("/submit",function(req,res){
     var queries = req.query;
     console.log('Colenso/' + queries.path);
     console.log(req.body.text);
-    client.replace('Colenso/' + queries.path, req.body.text,
+    client.replace(queries.path, req.body.text,
         function(error, result) {
             if(error) {
                 console.error(error);
