@@ -11,8 +11,51 @@ client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/n
     "//name[@type = 'place' and position() = 1 and . = 'Manawarakau']",
     function(err,res) { if(!err) console.log(res.result)} );
 
-router.get("/",function(req,res){
+router.get("/",function(req,res) {
     res.render('index', {title: 'Some Letters?'});
+});
+
+router.get("/browse",function(req,res) {
+
+    var queries = req.query;
+    console.log(queries.path);
+
+    var path = "";
+
+    if (queries.path != undefined) {
+        path = queries.path;
+    }
+
+    client.execute("XQUERY for $p in collection('Colenso/" + path + "') return db:path($p)",
+        function (error, result) {
+            if (error) {
+                console.error(error);
+            } else {
+                var results = result.result.split('\n');
+                var folders = [];
+                var files = [];
+
+                for (var i = 0; i < results.length; i += 1) {
+                    if (results[i].split('/')[0].indexOf('.xml') < 0) {
+                        folders.push(results[i].split('/')[0]);
+                    } else {
+                        files.push(results[i].split('/')[0]);
+                    }
+                }
+
+                console.log(folders);
+                var unique_folders = [];
+
+                for (var i = 0; i < folders.length; i += 1) {
+                    if (unique_folders.indexOf(folders[i]) < 0) {
+                        unique_folders.push(folders[i]);
+                    }
+                }
+
+                console.log(unique_folders);
+                res.render('browse', {title: 'Some Letters?', path: path, folders: unique_folders, files: files});
+            }
+    })
 });
 
 //search for a string ay
