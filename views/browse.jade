@@ -3,8 +3,8 @@ head
   title=title
 block body
   +navbar("SWEN303", "dropdown_menu")
-    +nav_item("/", "active") Home
-    +nav_item("/browse") Browse
+    +nav_item("/") Home
+    +nav_item("/browse", "active") Browse
   .container
     h1 #{title}
     p Welcome to #{title}. A collection of documents!
@@ -19,7 +19,6 @@ block body
       each folder in folders
         a(href='browse?path=' + folder) #{folder}
         br
-      br
 
     if files != undefined
       if path.length > 1
@@ -29,3 +28,6 @@ block body
       each file in files
         a(href='view?path=' + path + file) #{file}
         br
+
+    br
+    a(href='upload?path=' + path) upload new file

@@ -18,7 +18,6 @@ router.get("/",function(req,res) {
 router.get("/browse",function(req,res) {
 
     var queries = req.query;
-    console.log(queries.path);
 
     var path = "";
 
@@ -29,8 +28,6 @@ router.get("/browse",function(req,res) {
         depth = path.split('/').length;
         path = path + '/';
     }
-
-    console.log(depth);
 
     client.execute("XQUERY for $p in collection('Colenso/" + path + "') return db:path($p)",
         function (error, result) {
@@ -72,8 +69,6 @@ router.get('/search1', function(req, res) {
     query = query.replace(" OR ", "' ftor '");
     query = query.replace(" not ", "' ftnot '");
     query = query.replace(" NOT ", "' ftnot '");
-
-    console.log(query);
 
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
         "for $p in *[.//text() contains text '" + query + "' using wildcards] return db:path($p)",
@@ -158,10 +153,7 @@ router.get('/edit', function(req,res) {
 });
 
 router.post("/submit",function(req,res){
-    var params = req.params;
     var queries = req.query;
-    console.log('Colenso/' + queries.path);
-    console.log(req.body.text);
     client.replace(queries.path, req.body.text,
         function(error, result) {
             if(error) {

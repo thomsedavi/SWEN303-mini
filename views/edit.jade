@@ -18,5 +18,5 @@ block body
 
     .container
         form(action='/submit?path=' + path, method='post')
-            textarea(name = 'text', style= "height:300px; width:100%") !{search_result}
+            textarea(name = 'text', style= "height:300px; width:100%") #{search_result}
             button.btn.btn-large(type="submit") Submit
