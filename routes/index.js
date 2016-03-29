@@ -1,5 +1,9 @@
 var express = require('express');
+var multer = require('multer');
 var router = express.Router();
+
+var uploading = multer();
+router.use(uploading.single('file'));
 
 var cheerio = require('cheerio');
 var basex = require('basex');
@@ -56,6 +60,29 @@ router.get("/browse",function(req,res) {
                 res.render('browse', {title: 'Some Letters?', path: path, folders: unique_folders, files: files});
             }
     })
+});
+
+router.post('/upload', function(req, res){
+    var queries = req.query;
+
+    if(req.file){
+        var path = queries.path + req.file.originalname;
+
+        var file = req.file.buffer.toString();
+        client.execute('ADD TO ' + path + ' "' + file + '"', function(error, result){
+            if(error){
+                console.error(error);
+            }
+        });
+    } else {
+        console.log('no file?');
+    }
+
+    if (queries.path) {
+        res.redirect('browse/?path=' + queries.path.substring(0, queries.path.length - 1));
+    } else {
+        res.redirect('browse');
+    }
 });
 
 //search for a string ay

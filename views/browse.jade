@@ -17,7 +17,7 @@ block body
     if folders.length > 0
       h3 folders
       each folder in folders
-        a(href='browse?path=' + folder) #{folder}
+        a(href='/browse?path=' + folder) #{folder}
         br
 
     if files != undefined
@@ -30,4 +30,6 @@ block body
         br
 
     br
-    a(href='upload?path=' + path) upload new file
+    form(action="/upload?path=" + path, method="post", enctype="multipart/form-data")
+      input(type="file", name="file")
+      button(type="submit") Upload
