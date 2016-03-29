@@ -10,6 +10,10 @@ block body
     p Welcome to #{title}. A collection of documents!
 
   .container
+    s
+    if folders.length == 0
+      a(href='/browse') home
+
     if folders.length > 0
       h3 folders
       each folder in folders

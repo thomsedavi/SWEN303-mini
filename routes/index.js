@@ -116,6 +116,25 @@ router.get('/view', function(req, res) {
     )
 });
 
+router.get('/download', function(req, res) {
+    var queries = req.query;
+    var fullpath  = queries.path.split('/');
+    var filename = fullpath[fullpath.length - 1];
+    client.execute("XQUERY doc ('Colenso/" + queries.path + "')",
+        function(error, result) {
+            if(error){
+                console.error(error);
+            } else {
+                var doc = result.result;
+                res.writeHead(200, {
+                    'Content-Disposition': 'attachment; filename=' + filename
+                });
+                res.write(doc);
+                res.end();            }
+        }
+    )
+});
+
 router.get('/edit', function(req,res) {
     var queries = req.query;
     client.execute("XQUERY doc ('Colenso/" + queries.path + "')",
