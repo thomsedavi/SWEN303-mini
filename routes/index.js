@@ -66,14 +66,23 @@ router.get('/search1', function(req, res) {
     var queries = req.query;
     var result_paths;
 
+    var query = queries.query.replace(" and ", "' ftand '");
+    query = query.replace(" AND ", "' ftand '");
+    query = query.replace(" or ", "' ftor '");
+    query = query.replace(" OR ", "' ftor '");
+    query = query.replace(" not ", "' ftnot '");
+    query = query.replace(" NOT ", "' ftnot '");
+
+    console.log(query);
+
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "for $p in //TEI[. contains text '" + queries.query + "'] return db:path($p)",
+        "for $p in *[.//text() contains text '" + query + "' using wildcards] return db:path($p)",
         function(error, result) {
             result_paths = result.result.split('\n');
         });
 
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "//TEI[. contains text '" + queries.query + "']",
+        "*[.//text() contains text '" + query + "' using wildcards]",
         function(error, result) {
             if(error){
                 console.error(error);
