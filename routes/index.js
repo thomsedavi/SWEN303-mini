@@ -22,9 +22,15 @@ router.get("/browse",function(req,res) {
 
     var path = "";
 
+    var depth = 0;
+
     if (queries.path != undefined) {
         path = queries.path;
+        depth = path.split('/').length;
+        path = path + '/';
     }
+
+    console.log(depth);
 
     client.execute("XQUERY for $p in collection('Colenso/" + path + "') return db:path($p)",
         function (error, result) {
@@ -36,14 +42,13 @@ router.get("/browse",function(req,res) {
                 var files = [];
 
                 for (var i = 0; i < results.length; i += 1) {
-                    if (results[i].split('/')[0].indexOf('.xml') < 0) {
-                        folders.push(results[i].split('/')[0]);
+                    if (results[i].split('/')[depth].indexOf('.xml') < 0) {
+                        folders.push(path + results[i].split('/')[depth]);
                     } else {
-                        files.push(results[i].split('/')[0]);
+                        files.push(results[i].split('/')[depth]);
                     }
                 }
 
-                console.log(folders);
                 var unique_folders = [];
 
                 for (var i = 0; i < folders.length; i += 1) {
@@ -51,8 +56,6 @@ router.get("/browse",function(req,res) {
                         unique_folders.push(folders[i]);
                     }
                 }
-
-                console.log(unique_folders);
                 res.render('browse', {title: 'Some Letters?', path: path, folders: unique_folders, files: files});
             }
     })

@@ -10,18 +10,18 @@ block body
     p Welcome to #{title}. A collection of documents!
 
   .container
-    if folders != undefined
+    if folders.length > 0
       h3 folders
       each folder in folders
         a(href='browse?path=' + folder) #{folder}
         br
-
-    br
+      br
 
     if files != undefined
-      if path.length > 0
+      if path.length > 1
         h3 files in #{path}
       else
         h3 files
       each file in files
-        a(href='view?path=' + file) #{file}
+        a(href='view?path=' + path + file) #{file}
+        br
