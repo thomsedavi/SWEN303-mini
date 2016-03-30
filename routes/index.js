@@ -9,11 +9,10 @@ var cheerio = require('cheerio');
 var basex = require('basex');
 var client = new basex.Session("127.0.0.1", 1984, "admin", "admin");
 
-client.execute("OPEN Colenso");
+var total_search_result = [];
+var search_result = [];
 
-client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-    "//name[@type = 'place' and position() = 1 and . = 'Manawarakau']",
-    function(err,res) { if(!err) console.log(res.result)} );
+client.execute("OPEN Colenso");
 
 router.get("/",function(req,res) {
     res.render('index', {title: 'Some Letters?'});
@@ -98,29 +97,37 @@ router.get('/textsearch', function(req, res) {
     query = query.replace(/ NOT /g, "' ftnot '");
 
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "for $p in *[.//text() contains text '" + query + "' using wildcards] return db:path($p)",
+        "for $p in *[. contains text '" + query + "' using wildcards] return db:path($p)",
         function(error, result) {
             result_paths = result.result.split('\n');
         });
 
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
-        "*[.//text() contains text '" + query + "' using wildcards]",
+        "*[. contains text '" + query + "' using wildcards]",
         function(error, result) {
             if(error){
                 console.error(error);
             } else {
                 var $ = cheerio.load(result.result);
-                var search_result = [];
                 //place is the position to find the next ten to be returned
                 var place = parseInt(queries.place);
+                search_result = [];
+                total_search_result = [];
                 $('TEI').each(function(index, element){
+                    var elem = cheerio(element);
+                    total_search_result.push({
+                        title: elem.find('title').first().text(),
+                        author: elem.find('author').first().text(),
+                        date: elem.find('date').first().text(),
+                        path: result_paths[index],
+                        data: elem.html()
+                    });
                     if(index >= place - 1 && index < place + 9) {
-                        var elem = cheerio(element);
                         search_result.push({
                             title: elem.find('title').first().text(),
                             author: elem.find('author').first().text(),
                             date: elem.find('date').first().text(),
-                            path: result_paths[index]
+                            path: result_paths[index],
                         });
                     }
                 });
@@ -149,8 +156,6 @@ router.get('/markupsearch', function(req, res) {
                 }
             }
 
-            var search_result = [];
-
             client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
                 "*[" + query + "]",
                 function(error, result) {
@@ -158,10 +163,17 @@ router.get('/markupsearch', function(req, res) {
                         console.error(error);
                     } else {
                         var $ = cheerio.load(result.result);
-                        var search_result = [];
-                        //place is the position to find the next ten to be returned
+                        search_result = [];
+                        total_search_result = [];
                         $('TEI').each(function(index, element){
                             var elem = cheerio(element);
+                            total_search_result.push({
+                                title: elem.find('title').first().text(),
+                                author: elem.find('author').first().text(),
+                                date: elem.find('date').first().text(),
+                                path: result_paths[index],
+                                data: elem.html()
+                            });
                             search_result.push({
                                 title: elem.find('title').first().text(),
                                 author: elem.find('author').first().text(),
@@ -170,12 +182,47 @@ router.get('/markupsearch', function(req, res) {
                             });
                         });
                         res.render('markupsearch', {title: 'search',
-                            search: req.query.query, search_result: search_result});
+                            search: req.query.query, search_result: search_result, total: search_result.length});
                     }
                 }
             );
         }
     );
+});
+
+// search within a search!
+router.get('/subsearch', function(req, res){
+    var queries = req.query;
+
+    var temp_search_result = [];
+
+    for (var i = 0; i < total_search_result.length; i+= 1) {
+        if (total_search_result[i].data.indexOf(queries.query) > 0) {
+            temp_search_result.push(total_search_result[i]);
+        }
+    }
+
+    total_search_result = temp_search_result;
+    search_result = [];
+
+    var place = parseInt(queries.place);
+
+    for (var i = place - 1; i < place + 9; i += 1) {
+        if (i < total_search_result.length) {
+            search_result.push({
+                title: total_search_result[i].title,
+                author: total_search_result[i].author,
+                date: total_search_result[i].date,
+                path: total_search_result[i].path
+            });
+        }
+    }
+
+    var last = place + 9 < total_search_result.length ? place + 9 : total_search_result.length;
+    res.render('subsearch', {title: 'search', search: queries.query, search_result: search_result,
+        first: place, prev: place - 10,
+        last: last, next: place + 10, total: total_search_result.length});
+
 });
 
 //return a file based on address, eg 'Colenso/private_letters/PrL-0024.xml'

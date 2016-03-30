@@ -28,10 +28,10 @@ block body
       if total > 10
         p showing #{first} to #{last}
       if first > 1
-        a(href='/textsearch?query=' + search + '&place=' + prev) previous <
+        a(href='/subsearch?query=' + search + '&place=' + prev) previous <
         span -
       if last < total
-        a(href='/textsearch?query=' + search + '&place=' + next) > next
+        a(href='/subsearch?query=' + search + '&place=' + next) > next
       ul
         each file in search_result
           li

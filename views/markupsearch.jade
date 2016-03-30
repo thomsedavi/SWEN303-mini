@@ -18,6 +18,10 @@ block body
   .container
     p Searched for '#{search}'.
     if search_result.length > 0
+      if total > 1
+        p #{total} results found
+      else
+        p #{total} result found
       ul
         each file in search_result
           li
