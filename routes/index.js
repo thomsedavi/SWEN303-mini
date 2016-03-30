@@ -86,16 +86,16 @@ router.post('/upload', function(req, res){
 });
 
 //search for a string ay
-router.get('/search1', function(req, res) {
+router.get('/textsearch', function(req, res) {
     var queries = req.query;
     var result_paths;
 
-    var query = queries.query.replace(" and ", "' ftand '");
-    query = query.replace(" AND ", "' ftand '");
-    query = query.replace(" or ", "' ftor '");
-    query = query.replace(" OR ", "' ftor '");
-    query = query.replace(" not ", "' ftnot '");
-    query = query.replace(" NOT ", "' ftnot '");
+    var query = queries.query.replace(/ and /g, "' ftand '");
+    query = query.replace(/ AND /g, "' ftand '");
+    query = query.replace(/ or /g, "' ftor '");
+    query = query.replace(/ OR /g, "' ftor '");
+    query = query.replace(/ not /g, "' ftnot '");
+    query = query.replace(/ NOT /g, "' ftnot '");
 
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
         "for $p in *[.//text() contains text '" + query + "' using wildcards] return db:path($p)",
@@ -131,6 +131,20 @@ router.get('/search1', function(req, res) {
             }
         }
     )
+});
+
+router.get('/markupsearch', function(req, res) {
+    var query = req.query.query;
+    var result_paths;
+
+    client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
+        "for $p in " + query + " return db:path($p)",
+        function(error, result) {
+            result_paths = result.result.split('\n');
+            console.log(result_paths);
+        });
+
+    res.render('index', {title: 'Some Letters?'});
 });
 
 //return a file based on address, eg 'Colenso/private_letters/PrL-0024.xml'

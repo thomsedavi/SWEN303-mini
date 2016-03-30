@@ -9,10 +9,10 @@ block body
     .container
         h1 #{title}
         p Search to #{title}. A collection of documents!
-        form.form-group(action="/search1", method="get")
+        form.form-group(action="/textsearch", method="get")
             input.input-block-level(type="text", name="query", placeholder="Query")
             button.btn.btn-large(type="submit", name="place", value="1") Submit
-        form.form-group(action="/search2", method="get")
+        form.form-group(action="/markupsearch", method="get")
             input.input-block-level(type="text", name="query", placeholder="Query")
             button.btn.btn-large(type="submit") Submit
 

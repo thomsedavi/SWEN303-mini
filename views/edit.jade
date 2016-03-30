@@ -7,16 +7,6 @@ block body
         +nav_item("/browse") Browse
 
     .container
-        h1 #{title}
-        p Edit to #{title}. A collection of documents!
-        form.form-group(action="/search1", method="get")
-            input.input-block-level(type="text", name="query", placeholder="Query")
-            button.btn.btn-large(type="submit", name="place", value="1") Submit
-        form.form-group(action="/search2", method="get")
-            input.input-block-level(type="text", name="query", placeholder="Query")
-            button.btn.btn-large(type="submit") Submit
-
-    .container
         form(action='/submit?path=' + path, method='post')
             textarea(name = 'text', style= "height:300px; width:100%") #{search_result}
             button.btn.btn-large(type="submit") Submit
