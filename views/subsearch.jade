@@ -10,10 +10,7 @@ block body
     h1 #{title}
     form.form-group(action="/textsearch", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
-      button.btn.btn-large(type="submit", name="place", value="1") Submit
-    form.form-group(action="/markupsearch", method="get")
-      input.input-block-level(type="text", name="query", placeholder="Query")
-      button.btn.btn-large(type="submit") Submit
+      button.btn.btn-large(type="submit", name="place", value="1") New Search
     form.form-group(action="/subsearch", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
       button.btn.btn-large(type="submit", name="place", value="1") Refine Search
