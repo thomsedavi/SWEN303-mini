@@ -1,0 +1,28 @@
+extends ../node_modules/jade-bootstrap/_bootstrap
+head
+  title=title
+block body
+  +navbar("SWEN303", "dropdown_menu")
+    +nav_item("/", "active") Home
+    +nav_item("/browse") Browse
+
+  .container
+    h1 #{title}
+    form.form-group(action="/textsearch", method="get")
+      input.input-block-level(type="text", name="query", placeholder="Query")
+      button.btn.btn-large(type="submit", name="place", value="1") Submit
+    form.form-group(action="/markupsearch", method="get")
+      input.input-block-level(type="text", name="query", placeholder="Query")
+      button.btn.btn-large(type="submit") Submit
+
+  .container
+    p Searched for '#{search}'.
+    if search_result.length > 0
+      ul
+        each file in search_result
+          li
+            a(href='view?path='+file.path)  #{file.title}
+            p #{file.author}, #{file.date}
+            a(href='edit?path='+file.path) edit
+    else
+      p no results sorry!

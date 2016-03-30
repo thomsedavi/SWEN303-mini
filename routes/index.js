@@ -135,16 +135,47 @@ router.get('/textsearch', function(req, res) {
 
 router.get('/markupsearch', function(req, res) {
     var query = req.query.query;
-    var result_paths;
 
     client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
         "for $p in " + query + " return db:path($p)",
         function(error, result) {
-            result_paths = result.result.split('\n');
-            console.log(result_paths);
-        });
+            all_result_paths = result.result.split('\n');
+            console.log(all_result_paths);
+            var result_paths = [];
 
-    res.render('index', {title: 'Some Letters?'});
+            for (var i = 0; i < all_result_paths.length; i += 1) {
+                if (result_paths.indexOf(all_result_paths[i]) < 0) {
+                    result_paths.push(all_result_paths[i]);
+                }
+            }
+
+            var search_result = [];
+
+            client.execute("XQUERY declare default element namespace 'http://www.tei-c.org/ns/1.0'; " +
+                "*[" + query + "]",
+                function(error, result) {
+                    if(error){
+                        console.error(error);
+                    } else {
+                        var $ = cheerio.load(result.result);
+                        var search_result = [];
+                        //place is the position to find the next ten to be returned
+                        $('TEI').each(function(index, element){
+                            var elem = cheerio(element);
+                            search_result.push({
+                                title: elem.find('title').first().text(),
+                                author: elem.find('author').first().text(),
+                                date: elem.find('date').first().text(),
+                                path: result_paths[index]
+                            });
+                        });
+                        res.render('markupsearch', {title: 'search',
+                            search: req.query.query, search_result: search_result});
+                    }
+                }
+            );
+        }
+    );
 });
 
 //return a file based on address, eg 'Colenso/private_letters/PrL-0024.xml'
