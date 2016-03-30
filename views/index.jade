@@ -3,14 +3,15 @@ head
   title=title
 block body
   +navbar("SWEN303", "dropdown_menu")
-    +nav_item("/", "active") Home
+    +nav_item("/", "active") Search
     +nav_item("/browse") Browse
   .container
     h1 #{title}
     p Welcome to #{title}. A collection of documents!
     form.form-group(action="/textsearch", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
-      button.btn.btn-large(type="submit", name="place", value="1") Submit
+      button.btn.btn-large(type="submit", name="place", value="1") Text Search
     form.form-group(action="/markupsearch", method="get")
       input.input-block-level(type="text", name="query", placeholder="Query")
-      button.btn.btn-large(type="submit") Submit
+      button.btn.btn-large(type="submit") Markup Search
+    a(href="/browse") Or browse files

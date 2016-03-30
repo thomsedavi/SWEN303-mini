@@ -3,10 +3,13 @@ head
     title=title
 block body
     +navbar("SWEN303", "dropdown_menu")
-        +nav_item("/", "active") Home
+        +nav_item("/", "active") Search
         +nav_item("/browse") Browse
 
     .container
+        h1 Editing document #{path}
+        if status != undefined
+          h3 #{status}
         form(action='/submit?path=' + path, method='post')
             textarea(name = 'text', style= "height:300px; width:100%") #{search_result}
             button.btn.btn-large(type="submit") Submit

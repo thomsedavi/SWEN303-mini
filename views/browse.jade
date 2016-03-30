@@ -3,16 +3,24 @@ head
   title=title
 block body
   +navbar("SWEN303", "dropdown_menu")
-    +nav_item("/") Home
+    +nav_item("/") Search
     +nav_item("/browse", "active") Browse
   .container
     h1 #{title}
-    p Welcome to #{title}. A collection of documents!
+    if path.length > 1
+      h4 Choose a file to add to folder #{path}
+    else
+      h4 Choose a file to add to database root
+
+    form(action="/upload?path=" + path, method="post", enctype="multipart/form-data")
+      input(type="file", name="file")
+      button(type="submit") Upload
 
   .container
     s
-    if folders.length == 0
-      a(href='/browse') home
+    if path.length > 1
+      br
+      a(href='/browse') Return to root level
 
     if folders.length > 0
       h3 folders
@@ -28,8 +36,3 @@ block body
       each file in files
         a(href='view?path=' + path + file) #{file}
         br
-
-    br
-    form(action="/upload?path=" + path, method="post", enctype="multipart/form-data")
-      input(type="file", name="file")
-      button(type="submit") Upload

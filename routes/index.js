@@ -15,7 +15,7 @@ var search_result = [];
 client.execute("OPEN Colenso");
 
 router.get("/",function(req,res) {
-    res.render('index', {title: 'Some Letters?'});
+    res.render('index', {title: 'Colenso Search'});
 });
 
 router.get("/browse",function(req,res) {
@@ -56,7 +56,7 @@ router.get("/browse",function(req,res) {
                         unique_folders.push(folders[i]);
                     }
                 }
-                res.render('browse', {title: 'Some Letters?', path: path, folders: unique_folders, files: files});
+                res.render('browse', {title: 'Browse', path: path, folders: unique_folders, files: files});
             }
     })
 });
@@ -132,7 +132,7 @@ router.get('/textsearch', function(req, res) {
                     }
                 });
                 var last = place + 9 < $('TEI').length ? place + 9 : $('TEI').length;
-                res.render('search', {title: 'search', search: queries.query, search_result: search_result,
+                res.render('search', {title: 'Text Search', search: queries.query, search_result: search_result,
                     first: place, prev: place - 10,
                     last: last, next: place + 10, total: $('TEI').length});
             }
@@ -180,7 +180,7 @@ router.get('/markupsearch', function(req, res) {
                                 path: result_paths[index]
                             });
                         });
-                        res.render('markupsearch', {title: 'search',
+                        res.render('markupsearch', {title: 'Markup Search',
                             search: req.query.query, search_result: search_result, total: search_result.length});
                     }
                 }
@@ -218,7 +218,7 @@ router.get('/subsearch', function(req, res){
     }
 
     var last = place + 9 < total_search_result.length ? place + 9 : total_search_result.length;
-    res.render('subsearch', {title: 'search', search: queries.query, search_result: search_result,
+    res.render('subsearch', {title: 'Subsearch', search: queries.query, search_result: search_result,
         first: place, prev: place - 10,
         last: last, next: place + 10, total: total_search_result.length});
 
@@ -232,7 +232,7 @@ router.get('/view', function(req, res) {
             if(error){
                 console.error(error);
             } else {
-                res.render('view', {title: 'found a thing', search_result: result.result, path: queries.path});
+                res.render('view', {title: 'Document View', search_result: result.result, path: queries.path});
             }
         }
     )
@@ -271,7 +271,7 @@ router.get('/edit', function(req,res) {
             if(error) {
                 console.error(error);
             } else {
-                res.render('edit', {title: 'found a thing', search_result: result.result, path: queries.path});
+                res.render('edit', {title: 'Document Edit', search_result: result.result, path: queries.path});
             }
         }
     )
@@ -284,7 +284,7 @@ router.post("/submit",function(req,res){
             if(error) {
                 console.error(error);
             } else {
-                res.render('edit', {title: 'changes saved', search_result: req.body.text, path: queries.path});
+                res.render('edit', {title: 'Document Edit', status: 'changes saved', search_result: req.body.text, path: queries.path});
             }
         }
     )
