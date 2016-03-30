@@ -147,7 +147,6 @@ router.get('/markupsearch', function(req, res) {
         "for $p in " + query + " return db:path($p)",
         function(error, result) {
             all_result_paths = result.result.split('\n');
-            console.log(all_result_paths);
             var result_paths = [];
 
             for (var i = 0; i < all_result_paths.length; i += 1) {
@@ -253,9 +252,16 @@ router.get('/download', function(req, res) {
                     'Content-Disposition': 'attachment; filename=' + filename
                 });
                 res.write(doc);
-                res.end();            }
+                res.end();
+            }
         }
     )
+});
+
+router.get('/downloadall', function(req, res) {
+    for (var i = 0; i < total_search_result.length; i += 1) {
+        res.redirect('/download?path=' + total_search_result[i].path);
+    }
 });
 
 router.get('/edit', function(req,res) {

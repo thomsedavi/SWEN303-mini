@@ -38,5 +38,7 @@ block body
             a(href='view?path='+file.path)  #{file.title}
             p #{file.author}, #{file.date}
             a(href='edit?path='+file.path) edit
+      br
+      a(href='downloadall') Download all
     else
       p no results sorry!
